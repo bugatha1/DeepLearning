@@ -27,5 +27,46 @@ def unzip_data(filename):
 import os
 
 def walk_through_dir(dir_path):
-  for dirpath, dirnames, filenames in os.Walk(dir_path):
+  for dirpath, dirnames, filenames in os.walk(dir_path):
     print(f"there are {len(dirnames)} directories and {len(filenames)} filenames in {dirpath}")
+
+import datetime
+
+def create_tensorboard_callback(dir_name, experiment_name):
+  log_dir = dir_name + "/" + experiment_name + "/" + datetime.datetime.strftime('%Y%m%d-%H%M%S')
+  tensorboard_callback = tf.keras.callbacks.TesnorBoard(log_dir = log_dir)
+
+  print(f"saving tensorboard log files into {log_dir}")
+  return tensorboard_callback
+
+# Plot the validation and training data separately
+import matplotlib.pyplot as plt
+
+def plot_loss_curves(history):
+  """
+  Returns separate loss curves for training and validation metrics.
+  Args:
+    history: TensorFlow model History object (see: https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/History)
+  """ 
+  loss = history.history['loss']
+  val_loss = history.history['val_loss']
+
+  accuracy = history.history['accuracy']
+  val_accuracy = history.history['val_accuracy']
+
+  epochs = range(len(history.history['loss']))
+
+  # Plot loss
+  plt.plot(epochs, loss, label='training_loss')
+  plt.plot(epochs, val_loss, label='val_loss')
+  plt.title('Loss')
+  plt.xlabel('Epochs')
+  plt.legend()
+
+  # Plot accuracy
+  plt.figure()
+  plt.plot(epochs, accuracy, label='training_accuracy')
+  plt.plot(epochs, val_accuracy, label='val_accuracy')
+  plt.title('Accuracy')
+  plt.xlabel('Epochs')
+  plt.legend();
